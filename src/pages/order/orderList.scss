@@ -1,0 +1,54 @@
+@import "@/assets/style/config.scss";
+
+.order {
+  &-tr {
+    p {
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+  }
+  &-item {
+    font-size: 12px;
+    &__img {
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      margin-right: 10px;
+      vertical-align: top;
+    }
+    &__info {
+      display: inline-block;
+      p {
+        margin-bottom: 5px;
+        &.price {
+          color: $red;
+        }
+      }
+    }
+    &__itemname {
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display:-webkit-box;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp: 2;
+    }
+  }
+}
+
+.user {
+  &-tr {
+    font-size: 12px;
+    p {
+      margin-bottom: 5px;
+    }
+    &__address {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display:-webkit-box;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp: 2;
+    }
+  }
+}
