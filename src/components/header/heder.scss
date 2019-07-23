@@ -1,0 +1,11 @@
+.header {
+  width: 100%;
+  background: #001529;
+  overflow: hidden;
+  .logout {
+    float: right;
+    color: #fff;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+}

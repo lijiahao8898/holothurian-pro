@@ -43,9 +43,9 @@ function Home (props) {
                 <Breadcrumb style={{margin: '15px 0'}}>
                     {breadcrumbItems}
                 </Breadcrumb>
-                <Layout style={{padding: '15px 0', background: '#fff'}}>
+                <Layout style={{padding: '10px 0', background: '#fff'}}>
                     <SidebarComponent></SidebarComponent>
-                    <Content style={{padding: '0 15px', minHeight: 280}}>
+                    <Content style={{padding: '0 5px', minHeight: 280}}>
                         <Switch>
                             <Route path="/index/orders" component={OrderList}/>
                         </Switch>

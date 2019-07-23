@@ -4,11 +4,13 @@
   &-tr {
     p {
       font-size: 12px;
-      margin-bottom: 5px;
+      margin-bottom: 2px;
     }
   }
   &-item {
     font-size: 12px;
+    margin-bottom: 5px;
+    width: 330px;
     &__img {
       display: inline-block;
       width: 100px;
@@ -19,7 +21,7 @@
     &__info {
       display: inline-block;
       p {
-        margin-bottom: 5px;
+        margin-bottom: 2px;
         &.price {
           color: $red;
         }
@@ -40,7 +42,7 @@
   &-tr {
     font-size: 12px;
     p {
-      margin-bottom: 5px;
+      margin-bottom: 2px;
     }
     &__address {
       max-width: 200px;
@@ -51,4 +53,10 @@
       -webkit-line-clamp: 2;
     }
   }
+}
+
+.search {
+  background: $gary;
+  padding: 10px;
+  margin: 0 0 5px;
 }

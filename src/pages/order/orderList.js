@@ -1,9 +1,20 @@
 import React from 'react';
-import {Table, Pagination, Button, Popconfirm, Icon, Form, Input, Select} from 'antd';
+import {
+    Table,
+    Pagination,
+    Button,
+    Popconfirm,
+    Icon,
+    Form,
+    Select,
+    Tag,
+    message
+} from 'antd';
 import Api from '@/utils/api/index';
 import './orderList.scss';
 import {accDiv, getColumnStatus} from '@/utils/tool/common';
 import SendGoodsModal from './sendGoodsModal'
+import ExpressModal from './expressModal'
 
 const { Option } = Select;
 
@@ -61,7 +72,9 @@ class OrderList extends React.Component {
             },
             pageLoading: false,
             visible: false,
+            visibleExpress: false,
             currentItem: null,
+            currentExpress: null,
             orderList: []
         };
     }
@@ -127,16 +140,40 @@ class OrderList extends React.Component {
 
     cancelSendGoods = () => {
         this.setState({
-            visible: false
+            visible: false,
+            visibleExpress: false
         })
     };
 
-    deleteItem () {
+    showExpressModal (record, e) {
+        e.preventDefault();
+        this.setState({
+            currentExpress: record,
+            visibleExpress: true
+        })
+    }
 
+    async deleteItem (record) {
+        // 发货
+        const data = await Api('patch', 'sendGoods', {
+            id: record.id,
+            orderStatus: -4
+        });
+        if (data.code === 200) {
+            message.success('关闭订单成功！');
+        }
     }
 
     render () {
-        const {orderList, pagination, pageLoading, visible, currentItem} = this.state;
+        const {
+            orderList,
+            pagination,
+            pageLoading,
+            visible,
+            visibleExpress,
+            currentItem,
+            currentExpress
+        } = this.state;
         const { getFieldDecorator } = this.props.form;
         console.log('render');
         const columns = [
@@ -186,7 +223,7 @@ class OrderList extends React.Component {
                     return (
                         <div className="order-tr">
                             <p>订单编号：{record.orderSn}</p>
-                            <p>订单状态：{getColumnStatus(record.orderStatus, orderStatus)}</p>
+                            <div>订单状态：<Tag color={record.orderStatus > 0 ? "#108ee9" : "#f50"}>{getColumnStatus(record.orderStatus, orderStatus)}</Tag></div>
                             <p>订单总价：{accDiv(record.totalPrice, 100)}</p>
                             <p>备注：{record.remark}</p>
                         </div>
@@ -196,7 +233,6 @@ class OrderList extends React.Component {
                 title: '发货信息',
                 dataIndex: 'expressNo',
                 key: 'expressNo',
-                width: 200,
                 render: (text, record) => {
                     return (
                         <div className="order-tr">
@@ -204,6 +240,7 @@ class OrderList extends React.Component {
                             <p>发货方式：{getColumnStatus(record.deliveryType, deliveryType)}</p>
                             <p>快递公司：{record.expressCompany}</p>
                             <p>快递号：{record.expressNo}</p>
+                            {record.expressNo && <p>物流信息：<Button type="primary" size="small" ghost onClick={this.showExpressModal.bind(this, record)}>查看</Button></p>}
                         </div>
                     );
                 }
@@ -219,8 +256,8 @@ class OrderList extends React.Component {
                         <div>
                             {record.orderStatus >= 1 && <Button className="m-r-xs m-b-xs" type="primary" size="small"
                                      onClick={this.showSendGoodsModal.bind(this, record)} ghost>发货</Button>}
-                            {<Popconfirm
-                                title="真的要删除这个配置吗?"
+                            {record.orderStatus !== -4 && <Popconfirm
+                                title="真的要关闭当前订单吗?"
                                 okText="确定"
                                 cancelText="取消"
                                 placement="left"
@@ -262,35 +299,42 @@ class OrderList extends React.Component {
 
         return (
             <div>
-                <Form onSubmit={this.handleSubmit} layout={'inline'} className="m-b-xs">
-                    <Form.Item label="订单状态">
-                        {getFieldDecorator('orderStatus')(
-                            <Select
-                                placeholder="请选择订单状态"
-                                style={{
-                                    width: '200px'
-                                }}
-                            >
-                                {orderStatus.map((item, index) => {
-                                    return (
-                                        <Option key={index} value={item.value}>
-                                            {item.label}
-                                        </Option>
-                                    )
-                                })}
-                            </Select>,
-                        )}
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">查询</Button>
-                    </Form.Item>
-                </Form>
+                <div className="search">
+                    <Form onSubmit={this.handleSubmit} layout={'inline'} className="m-b-xs">
+                        <Form.Item label="订单状态">
+                            {getFieldDecorator('orderStatus')(
+                                <Select
+                                    placeholder="请选择订单状态"
+                                    style={{
+                                        width: '200px'
+                                    }}
+                                    allowClear={true}
+                                >
+                                    {orderStatus.map((item, index) => {
+                                        return (
+                                            <Option key={index} value={item.value}>
+                                                {item.label}
+                                            </Option>
+                                        )
+                                    })}
+                                </Select>,
+                            )}
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit">查询</Button>
+                        </Form.Item>
+                    </Form>
+                </div>
                 <TableComponent/>
                 <SendGoodsModal
                     handleCancel={this.cancelSendGoods}
                     visible={visible}
                     currentItem={currentItem}
                 ></SendGoodsModal>
+                <ExpressModal handleCancel={this.cancelSendGoods}
+                              visible={visibleExpress}
+                              currentExpress={currentExpress}>
+                </ExpressModal>
             </div>
         );
     }

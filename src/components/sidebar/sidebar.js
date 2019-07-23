@@ -8,7 +8,7 @@ const {Sider} = Layout;
 class SidebarComponent extends React.Component {
     render () {
         return (
-            <Sider width={200} style={{background: '#fff'}}>
+            <Sider width={160} style={{background: '#fff'}}>
                 <Menu
                     mode="inline"
                     defaultSelectedKeys={['1']}
